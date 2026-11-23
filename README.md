@@ -10,7 +10,7 @@ This repository is the working code behind https://pontra.xyz.
 
 - **What runs today.** A company workspace in the browser (share classes, holders, grants with vesting, transfer rules, first-refusal notices, a change log; export and import as JSON), a vesting calculator (cliff, linear, monthly, cliff-only) and a transfer check covering sixteen rules. They run on an invented sample company. No wallet is needed for any of it.
 - **What reads live data.** Robinhood Chain mainnet: the latest block and its time (the "now" used for vesting and checks), block time, gas price, base fee, recent blocks and the Chainlink ETH/USD feed. Real cap tables are not on chain and nobody has published one there, so every holder number on the site is sample data or what you type.
-- **The contract.** `PontraCapLedger` (with the internal library `PontraTransferRules`) is written and tested but **not deployed yet**. Until it is, the ledger page explains what each action will write and runs nothing on chain.
+- **The contract.** `PontraCapLedger` (with the internal library `PontraTransferRules`) is live on Robinhood Chain at `0x20d145e1b10642b6ea72137347e0e5c717bbeb3b`, source verified on Blockscout. The ledger page reads any company entry from it and publishes the browser workspace to it from your wallet; the transfer check can ask the contract the same question.
 - **Planned, not built.** Scheduled reporting and a transfer-check API. $PONTRA is planned as a service token for those, once they exist.
 - **What nothing here claims.** A record in Pontra or PontraCapLedger is not proof of ownership of any company's shares; ownership comes from the company's own legal documents and register. A passing check is not legal or investment advice and does not make a transfer lawful. Pontra verifies no identities. It is not affiliated with Robinhood or any company. No safety guarantee for any contract and no promised value for $PONTRA.
 
@@ -50,7 +50,7 @@ After changing `src/lib/cap/rules.ts`, regenerate the parity cases with `npm run
 
 ### What was checked for this snapshot
 
-23 Nov 2026 (UTC), Node.js 20+, forge 1.x: `npm run typecheck` exit 0; `npm test` 37 pass / 0 fail (vesting and every transfer rule, the sample company, recording and cancelling, export and import, relay and rate-limit rules, deployment checker); `next build` 19 routes; `forge test` 24 passed (unit and fuzz in `PontraCapLedger.t.sol`, 3 invariants in `PontraCapLedger.invariant.t.sol`, and `PontraParity.t.sol`, which replays 400 vesting and 1,000 transfer-check cases generated from the TypeScript rules and gets identical answers) plus 2 fork tests against Robinhood Chain mainnet state in `PontraFork.t.sol`; browser tests with an injected wallet on a local fork of Robinhood Chain: 7 passed / 0 failed (wallet dialog, workspace, transfer check, vesting, publishing the sample company to a fork deployment and reading it back, the same on-chain check as the browser, the local deploy page, 390 px). `verify-deployment` printed MATCH for the fork deployment and MISMATCH for a wrong address. Not run: a mainnet deployment (none exists yet) and any outside security review.
+23 Nov 2026 (UTC), Node.js 20+, forge 1.x: `npm run typecheck` exit 0; `npm test` 37 pass / 0 fail (vesting and every transfer rule, the sample company, recording and cancelling, export and import, relay and rate-limit rules, deployment checker); `next build` 18 routes; `forge test` 24 passed (unit and fuzz in `PontraCapLedger.t.sol`, 3 invariants in `PontraCapLedger.invariant.t.sol`, and `PontraParity.t.sol`, which replays 400 vesting and 1,000 transfer-check cases generated from the TypeScript rules and gets identical answers) plus 2 fork tests against Robinhood Chain mainnet state in `PontraFork.t.sol`; browser tests with an injected wallet on a local fork of Robinhood Chain: 7 passed / 0 failed (wallet dialog, workspace, transfer check, vesting, publishing the sample company to a fork deployment and reading it back, the same on-chain check as the browser, the local deploy page that has since been removed, 390 px). `verify-deployment` printed MATCH for the fork deployment and MISMATCH for a wrong address. Mainnet deployment (block 121,274,081): `verify-deployment` printed MATCH (runtime byte for byte, creation input exactly this build), the creation receipt names the same address, and the source is verified on Blockscout. Not run: writes to the mainnet contract and any outside security review.
 
 ## Look at the site
 
@@ -66,14 +66,14 @@ Open http://localhost:6620. Everything works with no configuration: the server r
 
 | Contract | Address | Explorer |
 |---|---|---|
-| PontraCapLedger | not deployed yet | — |
+| PontraCapLedger | `0x20d145e1b10642b6ea72137347e0e5c717bbeb3b` | [Blockscout](https://robinhoodchain.blockscout.com/address/0x20d145e1b10642b6ea72137347e0e5c717bbeb3b?tab=contract) |
 
 Anyone can open a company entry; the wallet that opens it keeps the record and can hand it over in two steps. The keeper records up to 16 share classes (transferable or not, with a lockup), one grant per holder and class with a vesting schedule (none, linear, monthly or cliff-only), transfer rules (company lockup, a right-of-first-refusal window of up to 90 days, holder cap, accredited-only, allowlist-only, minimum size), first-refusal notices and a freeze. `checkTransfer` returns a 16-bit mask with one bit per failing rule; `recordTransfer` only goes through when the mask is 0 and otherwise reverts with the mask. `cancelUnvested` keeps what has vested. Every write needs a document hash and is appended to the company's change log, which is never edited. The contract has no global owner, no admin, no fee and no upgrade path, makes no external calls and holds no funds (no payable function). Measured gas: deployment 3,213,664; `createCompany` 189,136; `grant` 251,036; `recordTransfer` 257,545.
 
 ## Verify a deployment
 
 ```
-npm run verify-deployment -- --ledger <address> --ledger-tx <creation transaction>
+npm run verify-deployment -- --ledger 0x20d145e1b10642b6ea72137347e0e5c717bbeb3b --ledger-tx 0x9fc5a068925eaec0d4ddebb4b2df0e902d0e3723069026f197893d94a3f856b5
 ```
 
 The script compares the bytecode on Robinhood Chain with the build in this repository and prints MATCH or the first difference.
@@ -115,8 +115,8 @@ $PONTRA is the community token of Pontra on Robinhood Chain. Contract address: a
 | `KV_REST_API_URL`, `KV_REST_API_TOKEN` | Shared rate-limit store | `https://…`, token string |
 | `STORE_KEY_PREFIX` | Key prefix in that store | short text, default `pontra:` |
 
-3. After the deploy: `/` answers 200, `/api/chain` returns JSON with a block number, `/deploy` answers 404 on any public host.
-4. Contract: `PontraCapLedger` has no constructor arguments. Deploy it (for example `forge create` or `/deploy` on localhost), write its address and block into `src/config/contracts.ts`, then run `npm run verify-deployment`.
+3. After the deploy: `/` answers 200, `/api/chain` returns JSON with a block number.
+4. Contract: `PontraCapLedger` has no constructor arguments. Deploy it (for example with `forge create`), write its address and block into `src/config/contracts.ts`, then run `npm run verify-deployment`.
 
 ## Contributing
 

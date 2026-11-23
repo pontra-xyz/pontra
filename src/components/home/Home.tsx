@@ -290,7 +290,7 @@ export function Closing() {
         </div>
         <Reveal className="mx-auto mt-14 max-w-[520px] text-center">
           <p className="body-md">
-            Everything here is a proposal for Robinhood Chain. The prototype runs today on sample data, and PontraCapLedger is written and tested, waiting to be deployed.
+            Everything here is a proposal for Robinhood Chain. The prototype runs today on sample data, and PontraCapLedger is live on Robinhood Chain with its source verified.
           </p>
           <p className="mt-4 flex justify-center">
             <SampleBadge label="Sample company, invented" />

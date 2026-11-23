@@ -10,7 +10,7 @@ export const FAQ: { q: string; a: string }[] = [
   },
   {
     q: "Is the cap table on chain?",
-    a: "Not today. Real cap tables are private and nobody has put them on Robinhood Chain. PontraCapLedger is written and tested so a company can record one if it chooses; until the owner deploys it, the ledger page shows what it will do and the workspace stays in your browser.",
+    a: "Not today. Real cap tables are private and nobody has put them on Robinhood Chain. PontraCapLedger is live on Robinhood Chain so a company can record one if it chooses; the workspace stays in your browser until you publish it from the ledger page.",
   },
   {
     q: "Why does a transfer fail more than once?",
@@ -18,7 +18,7 @@ export const FAQ: { q: string; a: string }[] = [
   },
   {
     q: "Do I need a wallet or $PONTRA?",
-    a: "No. The workspace, vesting and transfer check work without either. A wallet is only needed to write to the contract once it is deployed. $PONTRA is a planned service token for reporting and the transfer-check API, and it is not proof of ownership of any shares.",
+    a: "No. The workspace, vesting and transfer check work without either. A wallet is only needed to write to the contract. $PONTRA is a planned service token for reporting and the transfer-check API, and it is not proof of ownership of any shares.",
   },
   {
     q: "How is a month counted in vesting?",

@@ -1,17 +1,19 @@
 import { isAddress } from "@/config/brand";
 
 /*
- * Pontra's own contract on Robinhood Chain (chain 4663). NOT DEPLOYED YET: the owner deploys it from /deploy (localhost only),
- * then writes the address and block here, runs `npm run verify-deployment -- --ledger <a> --ledger-tx <tx>` and verifies the
- * source on Blockscout (referensi/explorer kit).
+ * Pontra's own contract on Robinhood Chain (chain 4663), deployed 23 Nov 2026 and source-verified on Blockscout.
+ * Check it yourself: `npm run verify-deployment -- --ledger 0x20d145e1b10642b6ea72137347e0e5c717bbeb3b
+ *   --ledger-tx 0x9fc5a068925eaec0d4ddebb4b2df0e902d0e3723069026f197893d94a3f856b5` prints MATCH.
  *   ledger  PontraCapLedger (+ internal library PontraTransferRules): per-company records of share classes, holder positions
  *           with vesting, transfer rules and first-refusal notices; checkTransfer() returns a reason bitmask; append-only
  *           change log with document hashes. Not a token, nothing transferable, no funds, no fee, no upgrade.
  */
 const DEPLOYED = {
-  ledger: "TBA",
-  /** Block of the deployment transaction (0 until deployed). */
-  block: 0,
+  ledger: "0x20d145e1b10642b6ea72137347e0e5c717bbeb3b",
+  /** Block of the deployment transaction. */
+  block: 121274081,
+  /** Deployment transaction. */
+  tx: "0x9fc5a068925eaec0d4ddebb4b2df0e902d0e3723069026f197893d94a3f856b5",
 };
 
 /**
