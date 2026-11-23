@@ -21,7 +21,7 @@ const SLUG = "pontra";
 const TICKER = "PONTRA";
 const DOMAIN = "pontra.xyz";
 /** X account of the project. */
-const X_HANDLE = "pontra";
+const X_HANDLE = "pontraxyz";
 
 export const BRAND = {
   name: NAME,
@@ -41,7 +41,7 @@ export const BRAND = {
   x: `https://x.com/${X_HANDLE}`,
   xHandle: `@${X_HANDLE}`,
   // Public source repository: hidden until it exists.
-  github: "https://github.com/",
+  github: "https://github.com/pontra-xyz/pontra",
   ca: CA,
 } as const;
 
