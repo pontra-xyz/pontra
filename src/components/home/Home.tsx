@@ -4,6 +4,7 @@ import { REASON, REASON_TEXT, type ReasonKey } from "@/lib/cap/rules";
 import { FAQ } from "@/lib/faq";
 import { ArrowRight, ArrowUpRight } from "@/components/site/Icons";
 import { Lines, Reveal } from "@/components/site/Reveal";
+import { MarkGlyph } from "@/components/site/Mark";
 import { SampleBadge, StatusBadge } from "@/components/site/PageHead";
 import { LiveFigures, CapPreview } from "@/components/home/LiveBits";
 import { Questions } from "@/components/home/Questions";
@@ -28,6 +29,9 @@ export function Hero() {
   return (
     <section className="hero-in relative" data-testid="hero">
       <div className="wrap flex min-h-[100svh] flex-col pt-[120px] md:pt-[150px]">
+        <div className="fade mx-auto mb-7 md:mb-9" style={{ "--i": 0 } as React.CSSProperties}>
+          <MarkGlyph size={56} />
+        </div>
         <h1 className="mx-auto text-center text-[clamp(50px,10.6vw,152px)] leading-[0.84] font-medium tracking-[-0.045em]">
           <span className="ln">
             <span style={{ "--i": 0 } as React.CSSProperties}>Private equity,</span>
